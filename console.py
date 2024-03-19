@@ -1,177 +1,336 @@
 #!/usr/bin/python3
-"""
-This is the console base for the unit
-"""
-
+""" Console Module """
 import cmd
+import sys
 import shlex
 from models.base_model import BaseModel
-from models import storage
-import json
+from models.__init__ import storage
+from models.food_items import FoodItems
 
+class RESTCommand(cmd.Cmd):
+    """ Contains the functionality for the RESTAURANT console"""
 
-class RestCommand(cmd.Cmd):
-    """Defines the Restaurant command line interpreter"""
-    prompt = '(hbnb) '
-    my_dict = {
-            'BaseModel': BaseModel
+    # determines prompt for interactive/non-interactive modes
+    prompt = '(res) ' if sys.__stdin__.isatty() else ''
+
+    classes = {
+               'BaseModel': BaseModel, 'FoodItems': FoodItems
+              }
+    dot_cmds = ['all', 'count', 'show', 'destroy', 'update']
+    types = {
+             'number_rooms': int, 'number_bathrooms': int,
+             'max_guest': int, 'price_by_night': int,
+             'latitude': float, 'longitude': float
             }
 
-    def emptyline(self):
-        """Do nothing when an empty line is received"""
-        pass
+    def preloop(self):
+        """Prints if isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(res)')
 
-    def do_quit(self, arg):
-        """Quit command to exit the program"""
-        return True
+    def precmd(self, line):
+        """Reformat command line for advanced command syntax.
+
+        Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
+        (Brackets denote optional fields in usage example.)
+        """
+        _cmd = _cls = _id = _args = ''  # initialize line elements
+
+        # scan for general formating - i.e '.', '(', ')'
+        if not ('.' in line and '(' in line and ')' in line):
+            return line
+
+        try:  # parse line left to right
+            pline = line[:]  # parsed line
+
+            # isolate <class name>
+            _cls = pline[:pline.find('.')]
+
+            # isolate and validate <command>
+            _cmd = pline[pline.find('.') + 1:pline.find('(')]
+            if _cmd not in RESTCommand.dot_cmds:
+                raise Exception
+
+            # if parantheses contain arguments, parse them
+            pline = pline[pline.find('(') + 1:pline.find(')')]
+            if pline:
+                # partition args: (<id>, [<delim>], [<*args>])
+                pline = pline.partition(', ')  # pline convert to tuple
+
+                # isolate _id, stripping quotes
+                _id = pline[0].replace('\"', '')
+                # possible bug here:
+                # empty quotes register as empty _id when replaced
+
+                # if arguments exist beyond _id
+                pline = pline[2].strip()  # pline is now str
+                if pline:
+                    # check for *args or **kwargs
+                    if pline[0] == '{' and pline[-1] == '}'\
+                            and type(eval(pline)) is dict:
+                        _args = pline
+                    else:
+                        _args = pline.replace(',', '')
+                        # _args = _args.replace('\"', '')
+            line = ' '.join([_cmd, _cls, _id, _args])
+
+        except Exception as mess:
+            pass
+        finally:
+            return line
+
+    def postcmd(self, stop, line):
+        """Prints if isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(res) ', end='')
+        return stop
+
+    def do_quit(self, command):
+        """ Method to exit the HBNB console"""
+        exit()
+
+    def help_quit(self):
+        """ Prints the help documentation for quit  """
+        print("Exits the program with formatting\n")
 
     def do_EOF(self, arg):
-        """EOF signal to end the program"""
-        return True
+        """ Handles EOF to exit program """
+        print()
+        exit()
 
-    def do_create(self, arg):
-        """ Creates a new instance of the basemodel class
-        saves it and prints the id
-        """
-        if not arg:
+    def help_EOF(self):
+        """ Prints the help documentation for EOF """
+        print("Exits the program without formatting\n")
+
+    def emptyline(self):
+        """ Overrides the emptyline method of CMD """
+        pass
+
+    def do_create(self, args):
+        """ Create an object of any class"""
+        if not args:
             print("** class name missing **")
             return
-        my_data = shlex.split(arg)
-        if my_data[0] not in RestCommand.my_dict.keys():
+
+        args_list = args.split()
+        class_name = args_list[0]
+
+        if class_name not in RESTCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = RestCommand.my_dict[my_data[0]]()
-        new_instance.save()
+
+        new_instance = RESTCommand.classes[class_name]()
+
+        """ Parse the parameters and add them to the dictionary"""
+        if len(args_list) > 1:
+            for param in args_list[1:]:
+                try:
+                    key, value = param.split('=')
+                    if value.startswith('"') and value.endswith('"'):
+                        if '_' in value:
+                            value = value.replace('_', ' ')
+                        value = value[1:-1].replace('\\"', '"')
+                        setattr(new_instance, key, value)
+                    elif '.' in value:
+                        setattr(new_instance, key, float(value))
+                    else:
+                        setattr(new_instance, key, int(value))
+                except ValueError:
+                    # Skip invalid parameters
+                    pass
+        # Save the instance and print its ID
+        storage.new(new_instance)
         print(new_instance.id)
+        storage.save()
 
-    def do_show(self, arg):
-        """
-        Prints the string representation of an instance
-        based on the class name and id
-        """
-        tokens = shlex.split(arg)
-        if len(tokens) == 0:
+    def do_show(self, args):
+        """ Method to show an individual object """
+        new = args.partition(" ")
+        c_name = new[0]
+        c_id = new[2]
+
+        # guard against trailing args
+        if c_id and ' ' in c_id:
+            c_id = c_id.partition(' ')[0]
+
+        if not c_name:
             print("** class name missing **")
             return
-        if tokens[0] not in RestCommand.my_dict.keys():
+
+        if c_name not in RESTCommand.classes:
             print("** class doesn't exist **")
             return
-        if len(tokens) <= 1:
+
+        if not c_id:
             print("** instance id missing **")
             return
-        storage.reload()
-        objs_dict = storage.all()
-        key = tokens[0] + "." + tokens[1]
-        if key in objs_dict:
-            obj_instance = str(objs_dict[key])
-            print(obj_instance)
-        else:
+
+        key = c_name + "." + c_id
+        try:
+            print(storage._FileStorage__objects[key])
+        except KeyError:
             print("** no instance found **")
 
-    def do_destroy(self, arg):
-        """
-        Deletes an instance based on the class name and id
-        save the change into the JSON file
-        Ex: $ destroy BaseModel 1234-1234-1234
-        """
-        cmd_input = shlex.split(arg)
-        if len(cmd_input) == 0:
+    def help_show(self):
+        """ Help information for the show command """
+        print("Shows an individual instance of a class")
+        print("[Usage]: show <className> <objectId>\n")
+
+    def do_destroy(self, args):
+        """ Destroys a specified object """
+        new = args.partition(" ")
+        c_name = new[0]
+        c_id = new[2]
+        if c_id and ' ' in c_id:
+            c_id = c_id.partition(' ')[0]
+
+        if not c_name:
             print("** class name missing **")
             return
-        if cmd_input[0] not in RestCommand.my_dict.keys():
+
+        if c_name not in RESTCommand.classes:
             print("** class doesn't exist **")
             return
-        if len(cmd_input) <= 1:
+
+        if not c_id:
             print("** instance id missing **")
             return
-        storage.reload()
-        obj_dict = storage.all()
-        cmd_key = cmd_input[0] + "." + cmd_input[1]
-        if cmd_key in obj_dict:
-            del obj_dict[cmd_key]
+
+        key = c_name + "." + c_id
+
+        try:
+            del(storage.all()[key])
             storage.save()
-        else:
+        except KeyError:
             print("** no instance found **")
 
-    def do_all(self, arg):
-        """
-        Prints all string representation of all instances
-        based on the class name
-        """
-        storage.reload()
-        my_json = []
-        objs_dict = storage.all()
-        if not arg:
-            for key in objs_dict:
-                my_json.append(str(objs_dict[key]))
-            print(json.dumps(my_json))
-            return
-        token = shlex.split(arg)
-        if token[0] in RestCommand.my_dict.keys():
-            for key in objs_dict:
-                if token[0] in key:
-                    my_json.append(str(objs_dict[key]))
-            print(json.dumps(my_json))
-        else:
-            print("** class doesn't exist **")
+    def help_destroy(self):
+        """ Help information for the destroy command """
+        print("Destroys an individual instance of a class")
+        print("[Usage]: destroy <className> <objectId>\n")
 
-    def do_update(self, arg):
-        """
-        Updates an instance based on the class name and id
-        by adding or updating attribute (save the change into the JSON file).
-        Ex: $ update BaseModel 1234-1234-1234 email "aibnb@mail.com".
-        Usage: update <class name> <id> <attribute name> "<attribute value>"
-        """
-        cmd_input = shlex.split(arg)
-        if len(cmd_input) == 0:
-            print('** class name missing **')
-            return
-        if cmd_input[0] not in RestCommand.my_dict.keys():
-            print("** class doesn't exist **")
-            return
-        if len(cmd_input) == 1:
-            print('** instance id missing **')
-            return
-        storage.reload()
-        objs_dict = storage.all()
-        obj_key = cmd_input[0] + '.' + cmd_input[1]
-        if obj_key not in objs_dict:
-            print('** no instance found **')
-            return
-        if len(cmd_input) == 2:
-            print('** attribute name missing **')
-            return
-        if len(cmd_input) == 3:
-            print('** value missing **')
-            return
-
-        obj_instance = objs_dict[obj_key]
-
-        """Get the attribute name and value"""
-
-        attr_name = cmd_input[2]
-        attr_value = cmd_input[3]
-
-        """Check if the attribute exists in the object"""
-
-        if hasattr(obj_instance, attr_name):
-
-            """Get the current type of the attribute and cast the value"""
-
-            attr_type = type(getattr(obj_instance, attr_name))
-            try:
-                casted_value = attr_type(attr_value)
-            except ValueError:
-                print('** value missing **')
+    def do_all(self, args):
+        """ Shows all objects, or all objects of a class"""
+        print_list = []
+        if args:
+            args = args.split(' ')[0]  # remove possible trailing args
+            if args not in RESTCommand.classes:
+                print("** class doesn't exist **")
                 return
-
-            """ Update the attribute value and save changes"""
-
-            setattr(obj_instance, attr_name, casted_value)
-            obj_instance.save()
+            for k, v in storage.all().items():
+                if k.split('.')[0] == args:
+                    print_list.append(str(v))
         else:
-            print('** attribute name missing **')
+            for k, v in storage.all().items():
+                print_list.append(str(v))
+
+        print(print_list)
+
+    def help_all(self):
+        """ Help information for the all command """
+        print("Shows all objects, or all of a class")
+        print("[Usage]: all <className>\n")
+
+    def do_count(self, args):
+        """Count current number of class instances"""
+        count = 0
+        for k, v in storage._FileStorage__objects.items():
+            if args == k.split('.')[0]:
+                count += 1
+        print(count)
+
+    def help_count(self):
+        """ """
+        print("Usage: count <class_name>")
+
+    def do_update(self, args):
+        """ Updates a certain object with new info """
+        c_name = c_id = att_name = att_val = kwargs = ''
+
+        # isolate cls from id/args, ex: (<cls>, delim, <id/args>)
+        args = args.partition(" ")
+        if args[0]:
+            c_name = args[0]
+        else:  # class name not present
+            print("** class name missing **")
+            return
+        if c_name not in RESTCommand.classes:  # class name invalid
+            print("** class doesn't exist **")
+            return
+
+        # isolate id from args
+        args = args[2].partition(" ")
+        if args[0]:
+            c_id = args[0]
+        else:  # id not present
+            print("** instance id missing **")
+            return
+
+        # generate key from class and id
+        key = c_name + "." + c_id
+
+        # determine if key is present
+        if key not in storage.all():
+            print("** no instance found **")
+            return
+
+        # first determine if kwargs or args
+        if '{' in args[2] and '}' in args[2] and type(eval(args[2])) is dict:
+            kwargs = eval(args[2])
+            args = []  # reformat kwargs into list, ex: [<name>, <value>, ...]
+            for k, v in kwargs.items():
+                args.append(k)
+                args.append(v)
+        else:  # isolate args
+            args = args[2]
+            if args and args[0] == '\"':  # check for quoted arg
+                second_quote = args.find('\"', 1)
+                att_name = args[1:second_quote]
+                args = args[second_quote + 1:]
+
+            args = args.partition(' ')
+
+            # if att_name was not quoted arg
+            if not att_name and args[0] != ' ':
+                att_name = args[0]
+            # check for quoted val arg
+            if args[2] and args[2][0] == '\"':
+                att_val = args[2][1:args[2].find('\"', 1)]
+
+            # if att_val was not quoted arg
+            if not att_val and args[2]:
+                att_val = args[2].partition(' ')[0]
+
+            args = [att_name, att_val]
+
+        # retrieve dictionary of current objects
+        new_dict = storage.all()[key]
+
+        # iterate through attr names and values
+        for i, att_name in enumerate(args):
+            # block only runs on even iterations
+            if (i % 2 == 0):
+                att_val = args[i + 1]  # following item is value
+                if not att_name:  # check for att_name
+                    print("** attribute name missing **")
+                    return
+                if not att_val:  # check for att_value
+                    print("** value missing **")
+                    return
+                # type cast as necessary
+                if att_name in RESTCommand.types:
+                    att_val = RESTCommand.types[att_name](att_val)
+
+                # update dictionary with name, value pair
+                new_dict.__dict__.update({att_name: att_val})
+
+        new_dict.save()  # save updates to file
+
+    def help_update(self):
+        """ Help information for the update class """
+        print("Updates an object with new information")
+        print("Usage: update <className> <id> <attName> <attVal>\n")
 
 
-if __name__ == '__main__':
-    RestCommand().cmdloop()
+if __name__ == "__main__":
+    RESTCommand().cmdloop()
