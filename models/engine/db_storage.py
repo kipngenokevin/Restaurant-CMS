@@ -21,17 +21,17 @@ class DBStorage:
 
     def __init__(self):
         """Instantiate a DBStorage object"""
-        HBNB_MYSQL_USER = getenv('REST_MYSQL_USER', 'RESTADMIN')
-        HBNB_MYSQL_PWD = getenv('REST_MYSQL_PWD', 'rest_admin_pass')
-        HBNB_MYSQL_HOST = getenv('REST_MYSQL_HOST', 'localhost')
-        HBNB_MYSQL_DB = getenv('REST_MYSQL_DB', 'restaurant_cms')
-        HBNB_ENV = getenv('REST_ENV', 'dev')
+        REST_MYSQL_USER = getenv('REST_MYSQL_USER', 'RESTADMIN')
+        REST_MYSQL_PWD = getenv('REST_MYSQL_PWD', 'rest_admin_pass')
+        REST_MYSQL_HOST = getenv('REST_MYSQL_HOST', 'localhost')
+        REST_MYSQL_DB = getenv('REST_MYSQL_DB', 'restaurant_cms')
+        REST_ENV = getenv('REST_ENV', 'dev')
         self.__engine = create_engine('mysql+mysqlconnector://{}:{}@{}/{}'.
-                                      format(HBNB_MYSQL_USER,
-                                             HBNB_MYSQL_PWD,
-                                             HBNB_MYSQL_HOST,
-                                             HBNB_MYSQL_DB))
-        if HBNB_ENV == "test":
+                                      format(REST_MYSQL_USER,
+                                             REST_MYSQL_PWD,
+                                             REST_MYSQL_HOST,
+                                             REST_MYSQL_DB))
+        if REST_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
     def all(self, cls=None):

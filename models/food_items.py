@@ -20,3 +20,8 @@ class FoodItems(BaseModel, Base):
     item_category = Column(String(100))
     item_first_price = Column(DECIMAL(10, 2), nullable=False)
     item_second_price = Column(DECIMAL(10, 2))
+    item_image = Column(String(255))
+    background_image = Column(String(255))
+    icon_1 = Column(String(255))
+    icon_2 = Column(String(255))
+    icon_3 = Column(String(255))
