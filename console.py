@@ -7,6 +7,7 @@ from models.base_model import BaseModel
 from models.__init__ import storage
 from models.food_items import FoodItems
 
+
 class RESTCommand(cmd.Cmd):
     """ Contains the functionality for the RESTAURANT console"""
 
