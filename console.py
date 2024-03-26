@@ -200,7 +200,9 @@ class RESTCommand(cmd.Cmd):
         key = c_name + "." + c_id
 
         try:
-            del(storage.all()[key])
+            obj = storage.all()[key]
+            print(obj)
+            storage.delete(obj)
             storage.save()
         except KeyError:
             print("** no instance found **")
@@ -234,10 +236,7 @@ class RESTCommand(cmd.Cmd):
 
     def do_count(self, args):
         """Count current number of class instances"""
-        count = 0
-        for k, v in storage._FileStorage__objects.items():
-            if args == k.split('.')[0]:
-                count += 1
+        count = storage.count()
         print(count)
 
     def help_count(self):
