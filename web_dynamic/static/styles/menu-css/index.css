@@ -1,0 +1,52 @@
+@font-face {
+	font-family: 'Futura-light';
+	src: url('fonts/Futura.woff2') format('woff2'),
+	  url('fonts/Futura.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: 'Futura-bold';
+	src:
+	  url('fonts/Futura-Bold.woff2') format('woff2'),
+	  url('fonts/Futura-Bold.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+  }
+  
+  @font-face {
+	font-family: 'Futura-medium';
+	src:
+	  url('fonts/futura_medium_bt-webfont.woff') format('woff2'),
+	  url('fonts/futura_medium_bt-webfont.woff2') format('woff');
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+  }
+  @font-face {
+	font-family: 'GlacialIndifference-Regular';
+	src: url('fonts/GlacialIndifference-Regular.otf') format('opentype');
+  }
+  
+  @font-face {
+	font-family: 'GlacialIndifference-Bold';
+	src: url('fonts/GlacialIndifference-Bold.otf') format('opentype');
+  }
+  
+  @font-face {
+	font-family: 'Garamond';
+	src: url('fonts/GaramondITCbyBT-Bold.otf') format('opentype');
+  }
+  
+  @font-face {
+	font-family: 'Knockout';
+	src: url('fonts/Knockout-HTF28-JuniorFeatherwt.otf') format('opentype');
+  }
+  
+  @font-face {
+	font-family: 'Survey-regular';
+	src: url('fonts/SurveyorDisplay-Book-Pro.otf') format('opentype');
+  } 
