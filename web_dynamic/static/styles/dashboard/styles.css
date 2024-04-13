@@ -1,0 +1,112 @@
+body {
+	margin: 0;
+	overflow-x: hidden;
+	background: #f4f4f4;
+	font-family: "Poppins";
+}
+
+.full-height {
+	min-height: 90vh;
+}
+
+.body-section {
+	background: #f4f4f4;
+}
+
+.dark-blue-background {
+	background: #1d2438;
+	color: #fff;
+}
+
+.user-profile {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+}
+
+.circle-small {
+	width: 50px;
+	border-radius: 50%;
+}
+
+.justify-items {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
+.large-card {
+	border-radius: 12px;
+	background: #fff;
+}
+
+.grouped-cards {
+	display: flex;
+	padding: 10px;
+	gap: 12px;
+	margin: 25px 25px 25px 0px;
+}
+
+.large-card {
+	padding: 15px;
+}
+
+.add-drop-shadow {
+	box-shadow: 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+table {
+	min-width: 100%;
+}
+
+tr {
+	border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+td {
+	padding: 12px;
+	font-weight: 300;
+	font-size: small;
+}
+
+tr:nth-child(even){background-color: #f1f1f1;}
+
+tr:hover {background-color: #ddd;}
+
+.header-section {
+	background: #fff;
+	min-width: 100%;
+	vertical-align: middle;
+	padding: 14px;
+}
+
+.display-container {
+	min-height: 50vh;
+	overflow-y: scroll;
+}
+
+.light-text {
+	font-weight: 300;
+}
+
+.small-icons {
+	filter: invert(100%);
+}
+
+.position-bottom {
+	position: absolute;
+	bottom: 100px;
+}
+
+.left-nav {
+	display: block;
+}
+
+.item {
+	margin-top: 15px;
+}
+
+.sidebar-menu {
+	padding: 22px 0px 0px 0px;
+}
