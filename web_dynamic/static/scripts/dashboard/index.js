@@ -15,14 +15,16 @@ $(()=>{
 								<td id="item-name">${foodItem.item_description}</td>
 								<td id="item-first-price">${foodItem.item_first_price}</td>
 								<td id="item-second-price">${foodItem.item_second_price}</td>
-								<td id="item-name"><a href="#">edit</a></td>
+								<td id="item-name"><a href="../../../web_dynamic/templates/dashboard/edit-item.html?id=${foodItem.id}">edit</a></td>
 							</tr>
 					`;
 				});
 				$('table.menu-items').append(coffeeSection);
 			},
 			error: function (xhr, status, error) {
-				console.error('Error:', status, error);
+				setTimeout(() => {
+					fetchAPIData()
+				  }, 2000)
 			} 
 		});
 	};
