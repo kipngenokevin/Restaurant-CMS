@@ -9,6 +9,10 @@ body {
 	min-height: 90vh;
 }
 
+.medium-height {
+	min-height: 100%;
+}
+
 .body-section {
 	background: #f4f4f4;
 }
