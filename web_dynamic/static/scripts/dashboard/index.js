@@ -1,5 +1,7 @@
 $(()=>{
 	const fetchAPIData = () => {
+		let loader = `<tr style="border-bottom: none; min-height: 100%;"><td style="text-align: center; vertical-align: middle;"><div class="loader" style="margin: auto;"></div></td></tr>`;
+		document.getElementsByClassName('menu-items')[0].innerHTML = loader;
 		$.ajax({
 			url: 'https://kcodev.tech/restaurantcms/api/food_items',
 			method: 'GET',
@@ -20,6 +22,7 @@ $(()=>{
 					`;
 				});
 				$('table.menu-items').append(coffeeSection);
+				$('.loader').remove();
 			},
 			error: function (xhr, status, error) {
 				setTimeout(() => {
