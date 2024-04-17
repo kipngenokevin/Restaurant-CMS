@@ -64,8 +64,20 @@ $(()=>{
 			contentType: 'application/json',
 			data: jsonData,
 			success: function(response){
-				alert("Item is successfully updated");
 				console.log(response);
+				var modal = document.getElementById("myModal");
+				var span = document.getElementsByClassName("close")[0];
+				var close = document.getElementsByClassName("modal-btn")[0];
+				modal.style.display = "block";
+				span.onclick = function() {
+					modal.style.display = "none";
+					location.replace("../../../web_dynamic/templates/dashboard/index.html");
+				}
+				close.onclick = function() {
+					location.replace("../../../web_dynamic/templates/dashboard/index.html");
+					modal.style.display = "none";
+				}
+
 				// open a new dialog that tells the user that item has beeen successfully updated
 				//now redirect the user to the home menu
 			},
