@@ -7,7 +7,17 @@ $(()=>{
 			method: 'GET',
 			success: function(response) {
 				console.log(response);
-				let coffeeSection = '';
+				let coffeeSection = `
+									<tr>
+									<th>Id</th>
+									<th>Name</th>
+									<th>Category</th>
+									<th>Description</th>
+									<th>First Price</th>
+									<th>Second Price</th>
+									<th>Action</th>
+									</tr>
+				`;
 				response.forEach(foodItem => {
 					coffeeSection += `
 							<tr>
@@ -33,4 +43,6 @@ $(()=>{
 	};
 
 	fetchAPIData();
+
+	
 });

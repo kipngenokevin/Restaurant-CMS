@@ -69,12 +69,21 @@ tr {
 }
 
 td {
-	padding: 12px;
+	padding: 5px;
 	font-weight: 300;
 	font-size: small;
 }
 
-tr:nth-child(even){background-color: #f1f1f1;}
+th {
+	padding: 12px;
+	font-weight: bold;
+	font-size: small;
+	vertical-align: baseline;
+}
+
+tr:nth-child(even):not(:nth-child(-n+2)) {
+    background-color: #f1f1f1;
+}
 
 tr:hover {background-color: #ddd;}
 

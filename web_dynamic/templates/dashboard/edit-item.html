@@ -58,31 +58,31 @@
 							<div class="grouped-cards">
 								<section class="large-card update-form col-sm-9">
 								<h5>Update item details</h5>
-								<form action="" method="put" class="edit-item-form row g-3">
+								<form method="put" class="edit-item-form row g-3" id="edit-item">
 									<!-- Name -->
 									<div class="col-md-6">
 										<label for="inputName" class="form-label">Name</label>
-										<input type="text" class="form-control" id="inputName">
+										<input type="text" class="form-control" id="inputName" name="item_name">
 									</div>
 									<!-- Image url -->
 									<div class="col-md-6">
 										<label for="inputImage" class="form-label">Image Url</label>
-										<input type="text" class="form-control" id="inputImage">
+										<input type="text" class="form-control" id="inputImage" name="background_image">
 									</div>
 									<!-- Description -->
 									<div class="col-md-12">
 										<label for="inputDesc" class="form-label">Description</label>
-										<textarea class="form-control" rows="5" id="inputDesc"> Update Description...</textarea>
+										<textarea class="form-control" rows="5" id="inputDesc" name="item_description"></textarea>
 									</div>
 									<!-- First price -->
 									<div class="col-md-6">
 										<label for="inputFirstPrice" class="form-label">First Price</label>
-										<input type="number" class="form-control" id="inputFirstPrice">
+										<input type="number" class="form-control" id="inputFirstPrice" name="item_first_price">
 									</div>
 									<!-- Second Price -->
 									<div class="col-md-6">
 										<label for="inputSecondPrice" class="form-label">Second Price</label>
-										<input type="number" class="form-control" id="inputSecondPrice">
+										<input type="number" class="form-control" id="inputSecondPrice" name="item_second_price">
 									</div>
 									<!-- ICONS -->
 									<div class="col-md-6">
@@ -109,7 +109,7 @@
 									</div>
 									<!-- SUBMIT -->
 									<div class="col-md-12">
-										<button type="submit" class="btn btn-dark">Update Item</button>
+										<button type="submit" class="btn btn-dark" id="submit">Update Item</button>
 									  </div>
 								</form>
 							</section>
