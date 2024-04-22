@@ -45,3 +45,7 @@
     text-decoration: none;
     cursor: pointer;
   }
+
+  .error {
+	color: rgb(248, 73, 73);
+  }

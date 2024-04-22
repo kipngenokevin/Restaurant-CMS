@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add New Menu Item</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="../../static/styles/dashboard/styles.css">
+<link rel="stylesheet" href="../../static/styles/dashboard/edit-items.css">
+<link rel="stylesheet" href="../../static/styles/dashboard/loader.css">
+<link rel="stylesheet" href="../../static/styles/dashboard/modal.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="../../static/scripts/dashboard/add-item.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div class="container-fluid full-height">
+		<div class="row">
+			<!-- SIDEBAR -->
+			<div class="col-sm-2 dark-blue-background ">
+				<div class="sidebar-menu">
+					<h3>Restaurant CMS</h3>
+					<div class="left-nav">
+						<div class="item">
+							<img class="img-reponsive small-icons" src="../../static/images/dashboard-images/home_FILL0_wght400_GRAD0_opsz24.svg">
+							Home
+						</div>
+						<div class="item">
+							<img class="img-reponsive small-icons" src="../../static/images/dashboard-images/add_box_FILL0_wght400_GRAD0_opsz24.svg">
+							New Menu Item
+						</div>
+						<div class="item">
+							<img class="img-reponsive small-icons" src="../../static/images/dashboard-images/quick_reference_all_FILL0_wght400_GRAD0_opsz24.svg">
+							View Menu Items
+						</div>
+					</div>
+				</div>
+				<div class="position-bottom">
+					<img class="img-responsive small-icons" src="../../static/images/dashboard-images/logout_FILL0_wght400_GRAD0_opsz24.svg">
+					Logout
+				</div>
+			</div>
+
+			<div class="col-sm-10">
+				<section class="header-section">
+					<div class="justify-items add-bottom-shadow">
+						<h5>Welcome to Restaurant CMS</h5>
+						<div class="user-profile">
+							<img class="img-responsive circle-small" src="../../static/images/dashboard-images/newprofile.png">
+							<p>Kevin</p>
+						</div>
+					</div>
+				</section>
+				<section class="body-menu">
+					
+					<section class="body-section full-height">
+						<div class="row">
+							<div class="grouped-cards">
+								<section class="large-card add-form col-sm-9">
+								<h5>Add New Menu Item</h5>
+								<form method="post" class="edit-item-form row g-3" id="add-item">
+									<!-- Name -->
+									<div class="col-md-6">
+										<label for="inputName" class="form-label">Name</label>
+										<input type="text" class="form-control" id="inputName" name="item_name" required>
+									</div>
+									<!-- Image url -->
+									<div class="col-md-6">
+										<label for="inputImage" class="form-label">Image Url</label>
+										<input type="text" class="form-control" id="inputImage" name="background_image">
+									</div>
+									<!-- Description -->
+									<div class="col-md-12">
+										<label for="inputDesc" class="form-label">Description</label>
+										<textarea class="form-control" rows="5" id="inputDesc" name="item_description"></textarea>
+									</div>
+									<!-- First price -->
+									<div class="col-md-6">
+										<label for="inputFirstPrice" class="form-label">First Price</label>
+										<input type="number" class="form-control" id="inputFirstPrice" name="item_first_price" required>
+									</div>
+									<!-- Second Price -->
+									<div class="col-md-6">
+										<label for="inputSecondPrice" class="form-label">Second Price</label>
+										<input type="number" class="form-control" id="inputSecondPrice" name="item_second_price">
+									</div>
+									<!-- ICONS -->
+									<div class="col-md-6">
+										<label for="inputIcon" class="form-label">Icons</label>
+										<select name="icons" class="form-control" id="inputIcon" required>
+											<option value="">--Please choose an option--</option>
+											<option value="Star">Star</option>
+											<option value="Dairy">Dairy</option>
+											<option value="Nuts">Nuts</option>
+										  </select>
+									</div>
+									<!-- CATEGORY -->
+									<div class="col-md-6">
+										<label for="inputCategory" class="form-label">Categories</label>
+										<select name="category" class="form-control" id="inputCategory" required>
+											<option value="">--Please choose an option--</option>
+											<option value="COFFEES">COFFEES</option>
+											<option value="TEAS">TEAS</option>
+											<option value="LUNCH & DINNER">LUNCH & DINNER</option>
+											<option value="PASTRIES">PASTRIES</option>
+											<option value="CAKES">CAKES</option>
+											<option value="MUFFINS">MUFFINS</option>
+										  </select>
+									</div>
+									<!-- SUBMIT -->
+									<div class="col-md-12">
+										<button type="submit" class="btn btn-dark" id="submit">Add Item</button>
+									  </div>
+								</form>
+								<div class="col-sm-12 modal" id="myModal">
+									<div class="modal-content">
+										<span class="close">&times;</span>
+										<h5>Thank you</h5>
+										<p>Item is successfully Added!</p>
+										<button class="btn btn-primary modal-btn">Close</button>
+									</div>
+								</div>
+							</section>
+							<section class="sidebar-ad col-sm-3">
+								<div class="large-card medium-height">
+									<h2 class="apidata">We hope you are having a lovely experience</h2>
+								</div>
+							</section>
+							</div>
+							
+						</div>
+					</section>
+				</section>
+			</div>
+		</div>
+	</div>
+
+
+
+</body>
+</html>
